@@ -1,0 +1,44 @@
+
+.card {
+    height: 200px;
+    border: 1px solid 		#e3e4e6;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+.card-text {
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 20px; 
+    max-height: 80px; 
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    
+ }
+ h5{
+     height: 48px;
+     text-overflow: ellipsis;
+     overflow: hidden;
+     display: -webkit-box;
+     -webkit-line-clamp: 2; 
+     -webkit-box-orient: vertical;
+ }
+
+
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  .card-body {
+    padding: 16px;
+  }
+
+  .card-title { 
+    width: 75%;
+  }
+
+
+
