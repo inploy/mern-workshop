@@ -1,26 +1,53 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import App from "../App";
+import Home from "../pages/Home";
 import CreateBlog from "../pages/CreateBlog";
 import EditBlog from "../pages/EditBlog";
 import Blog from "../pages/Blog";
 import Login from "../pages/Login";
+import MainLayout from "../components/MainLayout";
+
 import { getUser } from "../services/authorize";
+
+function RequireAuth({ children }) {
+  const isAuthenticated = getUser();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
+}
 
 const MyRoute = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route
-          path="/create"
-          element={getUser() ? <CreateBlog /> : <Navigate to="/login" />}
-        />
-        <Route path="/blog/:slug" element={<Blog />} />
-        <Route
-          path="edit/blog/:slug"
-          element={getUser() ? <EditBlog /> : <Navigate to="/login" />}
-        />
-        <Route path="login" element={<Login />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to="/blog" />} />
+          <Route path="login" element={<Login />} />
+          <Route path="blog">
+            <Route
+              index
+              path="create"
+              element={
+                <RequireAuth>
+                  <CreateBlog />
+                </RequireAuth>
+              }
+            />
+            <Route path=":slug" element={<Blog />} />
+            <Route
+              path=":slug/edit"
+              element={
+                <RequireAuth>
+                  <EditBlog />
+                </RequireAuth>
+              }
+            />
+            <Route index element={<Home />} />
+          </Route>
+          <Route path="*" element={<div>404</div>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

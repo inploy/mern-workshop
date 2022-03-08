@@ -1,28 +1,34 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useReducer } from "react";
+
 import Swal from "sweetalert2";
-import NavBar from "../components/Navbar/NavBar";
-import ReactQuill from "react-quill";
+import BlogForm from "../components/BlogForm";
 import "react-quill/dist/quill.snow.css";
 import { getToken } from "../services/authorize";
+import formReducer from "../reducers/formReducer";
+import request from "../utils/request";
+
+const initialForm = {
+  title: "",
+  author: "",
+  content: "",
+};
 
 const CreateBlog = () => {
-  const [data, setData] = useState({
-    title: "",
-    author: "",
-  });
-  const [content, setContent] = useState("");
+  const [data, dispatch] = useReducer(formReducer, initialForm);
 
-  const inputValue = (name) => (event) => {
-    setData({ ...data, [name]: event.target.value });
+  const handleOnChange = (field, value) => {
+    dispatch({
+      type: "HANDLE_INPUT",
+      field,
+      payload: value,
+    });
   };
 
-  const submitForm = (e) => {
-    e.preventDefault();
+  const submitForm = async () => {
     console.table({ title, author, content });
-    axios
-      .post(
-        `${process.env.REACT_APP_API}/create`,
+    try {
+      const res = await request.post(
+        "/create",
         {
           title,
           author,
@@ -33,58 +39,29 @@ const CreateBlog = () => {
             authorization: `Bearer ${getToken()} `,
           },
         }
-      )
-      .then((res) => {
-        Swal.fire("แจ้งเตือน", `บันทึก ${res.data.title} สำเร็จ`, "success");
-        console.log(data);
-        setData({ ...data, title: "", author: "" });
-        setContent("");
-      })
-      .catch((err) => {
-        Swal.fire("อุ้ปส์", err.response.data.error, "error");
+      );
+      Swal.fire("แจ้งเตือน", `บันทึก "${res.data.title}" สำเร็จ`, "success");
+      dispatch({
+        type: "RESET",
+        payload: initialForm,
       });
+    } catch (err) {
+      Swal.fire("อุ้ปส์", err.response.data.error, "error");
+    }
   };
 
-  const { title, author } = data;
+  const { title, author, content } = data;
 
   return (
     <>
-      <NavBar />
       <div className="container">
         <h1>Article</h1>
-        <form onSubmit={submitForm}>
-          <div className="form-group">
-            <label>ชื่อบทความ</label>
-            <input
-              type="text"
-              className="form-control"
-              value={title}
-              onChange={inputValue("title")}
-            />
-          </div>
-          <div className="form-group">
-            <label>ผู้แต่ง</label>
-            <input
-              type="text"
-              className="form-control"
-              value={author}
-              onChange={inputValue("author")}
-            />
-          </div>
-          <div className="form-group">
-            <label>รายละเอียด</label>
-            <ReactQuill
-              theme="snow"
-              placeholder="input your content"
-              value={content}
-              onChange={setContent}
-            />
-          </div>
-          <br />
-          <button type="submit" className="btn btn-success">
-            Create
-          </button>
-        </form>
+        <BlogForm
+          values={data}
+          onChange={handleOnChange}
+          onSubmit={submitForm}
+          buttonText="Create"
+        />
       </div>
     </>
   );

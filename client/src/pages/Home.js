@@ -1,39 +1,37 @@
-import NavBar from "../components/Navbar/NavBar";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import Card from "../components/Card/Card";
-// import renderHTML from "react-render-html";
-// import ReactHtmlParser from "react-html-parser";
+import { useState, useEffect, useCallback } from "react";
+import Swal from "sweetalert2";
+import Card from "../components/Card";
+import Load from "../components/Load";
+import request from "../utils/request";
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchData = () => {
-    axios
-      .get(`${process.env.REACT_APP_API}/blogs`)
-      .then((res) => {
-        setBlogs(res.data);
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  };
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await request.get("/blogs");
+      setBlogs(res.data);
+      setLoading(false);
+    } catch (err) {
+      Swal.fire("อุ้ปส์", err.response.data.error, "error");
+    }
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
-    <>
-      <NavBar />
+    <Load loading={loading}>
       <div className="container">
-        <div class="row row-cols-1 row-cols-sm-2  g-3 g-lg-4 my-4">
+        <div className="row row-cols-1 row-cols-sm-2  g-3 g-lg-4 my-4">
           {blogs.map((item, index) => (
             <Card {...item} key={index} callback={fetchData} />
           ))}
         </div>
       </div>
-    </>
+    </Load>
   );
 }
 

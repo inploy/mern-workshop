@@ -1,40 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
-import NavBar from "../components/Navbar/NavBar";
-import ReactQuill from "react-quill";
+import Load from "../components/Load";
 import "react-quill/dist/quill.snow.css";
 import { getToken } from "../services/authorize";
+import request from "../utils/request";
+import BlogForm from "../components/BlogForm";
+import formReducer from "../reducers/formReducer";
+
+const initialForm = {
+  title: "",
+  author: "",
+  content: "",
+};
 
 const EditBlog = () => {
   const [data, setData] = useState({});
-  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [form, dispatch] = useReducer(formReducer, initialForm);
   const { slug } = useParams();
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API}/blog/${slug}`)
-      .then((res) => {
-        setData(res.data);
-        setContent(res.data.content);
-      })
-      .catch((err) => {
-        alert(err);
+  const fetchBlog = useCallback(async () => {
+    try {
+      const res = await request.get(`blog/${slug}`);
+      setData(res.data);
+      dispatch({
+        type: "SET_DATA",
+        payload: res.data,
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      setLoading(false);
+    } catch (err) {
+      Swal.fire("อุ้ปส์", err.response.data.error, "error");
+    }
+  }, [slug]);
 
-  const inputValue = (name) => (event) => {
-    setData({ ...data, [name]: event.target.value });
+  useEffect(() => {
+    fetchBlog();
+  }, [fetchBlog]);
+
+  const handleOnChange = (field, value) => {
+    dispatch({
+      type: "HANDLE_INPUT",
+      field,
+      payload: value,
+    });
   };
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    console.table({ title, author, content });
-    axios
-      .put(
-        `${process.env.REACT_APP_API}/blog/${slug}`,
+  const submitForm = async () => {
+    const { title, author, content } = form;
+    try {
+      const res = await request.put(
+        `/blog/${slug}`,
         {
           title,
           author,
@@ -45,57 +61,25 @@ const EditBlog = () => {
             authorization: `Bearer ${getToken()} `,
           },
         }
-      )
-      .then((res) => {
-        Swal.fire("แจ้งเตือน", `แก้ไข ${res.data.title} สำเร็จ`, "success");
-      })
-      .catch((err) => {
-        Swal.fire("อุ้ปส์", err.response.data.error, "error");
-      });
+      );
+      Swal.fire("แจ้งเตือน", `แก้ไข "${res.data.title}" สำเร็จ`, "success");
+    } catch (err) {
+      Swal.fire("อุ้ปส์", err.response.data.error, "error");
+    }
   };
 
-  const { title, author } = data;
-
   return (
-    <>
-      <NavBar />
+    <Load loading={loading}>
       <div className="container">
         <h1>Edit Article</h1>
-        <form onSubmit={submitForm}>
-          <div className="form-group">
-            <label>Title</label>
-            <input
-              type="text"
-              className="form-control"
-              value={title}
-              onChange={inputValue("title")}
-            />
-          </div>
-          <div className="form-group">
-            <label>Author</label>
-            <input
-              type="text"
-              className="form-control"
-              value={author}
-              onChange={inputValue("author")}
-            />
-          </div>
-          <div className="form-group">
-            <label>Content</label>
-            <ReactQuill
-              theme="snow"
-              placeholder="input your content"
-              value={content}
-              onChange={setContent}
-            />
-          </div>
-          <br />
-          <button type="submit" className="btn btn-success">
-            Edit
-          </button>
-        </form>
+        <BlogForm
+          values={form}
+          onChange={handleOnChange}
+          onSubmit={submitForm}
+          buttonText="Edit"
+        />
       </div>
-    </>
+    </Load>
   );
 };
 

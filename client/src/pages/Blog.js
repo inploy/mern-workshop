@@ -1,28 +1,31 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useCallback } from "react";
+import Swal from "sweetalert2";
 import dayjs from "dayjs";
-import NavBar from "../components/Navbar/NavBar";
+import request from "../utils/request";
+import Load from "../components/Load";
 
 const Blog = () => {
   const [blog, setBlog] = useState("");
+  const [loading, setLoading] = useState("");
   const { slug } = useParams();
 
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await request.get(`/blog/${slug}`);
+      setBlog(res.data);
+      setLoading(false);
+    } catch (err) {
+      Swal.fire("อุ้ปส์", err.response.data.error, "error");
+    }
+  }, [slug]);
+
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API}/blog/${slug}`)
-      .then((res) => {
-        setBlog(res.data);
-      })
-      .catch((err) => {
-        alert(err);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   return (
-    <>
-      <NavBar />
+    <Load loading={loading}>
       <div className="container">
         <div className="col pt-3 pb-2 "></div>
         <h3>{blog.title}</h3>
@@ -32,7 +35,7 @@ const Blog = () => {
           {dayjs(blog.createdAt).format("DD/MM/YYYY")}
         </p>
       </div>
-    </>
+    </Load>
   );
 };
 

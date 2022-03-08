@@ -7,7 +7,7 @@ import "./style.css";
 const NavBar = () => {
   const navigate = useNavigate();
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+  const handleNavCollapse = () => setIsNavCollapsed((prevState) => !prevState);
 
   return (
     <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
@@ -16,11 +16,8 @@ const NavBar = () => {
           className="img"
           src="/logo.png"
           alt="logo"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/blog")}
         />
-        {/* <Link to="/" className="nav-link text-light">
-          Home
-        </Link> */}
         <button
           className="custom-toggler navbar-toggler"
           type="button"
@@ -38,7 +35,7 @@ const NavBar = () => {
           className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
           id="navbarsExample09"
         >
-          <Link to="/create" className="nav-link text-light">
+          <Link to="blog/create" className="nav-link text-light">
             Create Blog
           </Link>
           {!getUser() && (
