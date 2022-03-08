@@ -33,7 +33,9 @@ exports.create = (req, res) => {
 
 exports.getAllBlogs = (req, res) => {
   Blogs.find({}).exec((err, blogs) => {
-    if (err) console.log(err);
+    if (err) {
+      res.status(400).json({ error: "โหลดบทความไม่สำเร็จ" });
+    }
     res.json(blogs);
   });
 };
