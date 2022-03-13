@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import formReducer from "../reducers/formReducer";
 import request from "../utils/request";
 import { authenticate, getUser } from "../services/authorize";
+import "./style.css";
 
 const initialForm = {
   username: "",
@@ -52,7 +53,7 @@ const Login = () => {
   return (
     <>
       <div className="container">
-        <h1>เข้าสู่ระบบ | Admin</h1>
+        <h1 className="my-4">เข้าสู่ระบบ | Admin</h1>
         <form onSubmit={submitForm}>
           <div className="form-group">
             <label>Username</label>

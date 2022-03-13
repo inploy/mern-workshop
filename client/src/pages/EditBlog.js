@@ -10,6 +10,7 @@ import formReducer from "../reducers/formReducer";
 
 const initialForm = {
   title: "",
+  subTitle: "",
   author: "",
   content: "",
 };
@@ -47,12 +48,13 @@ const EditBlog = () => {
   };
 
   const submitForm = async () => {
-    const { title, author, content } = form;
+    const { title, subTitle, author, content } = form;
     try {
       const res = await request.put(
         `/blog/${slug}`,
         {
           title,
+          subTitle,
           author,
           content,
         },
@@ -71,12 +73,12 @@ const EditBlog = () => {
   return (
     <Load loading={loading}>
       <div className="container">
-        <h1>Edit Article</h1>
         <BlogForm
           values={form}
           onChange={handleOnChange}
           onSubmit={submitForm}
           buttonText="Edit"
+          header="Edit Blog"
         />
       </div>
     </Load>

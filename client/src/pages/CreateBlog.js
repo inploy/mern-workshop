@@ -9,6 +9,7 @@ import request from "../utils/request";
 
 const initialForm = {
   title: "",
+  subTitle: "",
   author: "",
   content: "",
 };
@@ -25,12 +26,13 @@ const CreateBlog = () => {
   };
 
   const submitForm = async () => {
-    console.table({ title, author, content });
+    console.table({ title, subTitle, author, content });
     try {
       const res = await request.post(
         "/create",
         {
           title,
+          subTitle,
           author,
           content,
         },
@@ -50,17 +52,17 @@ const CreateBlog = () => {
     }
   };
 
-  const { title, author, content } = data;
+  const { title, subTitle, author, content } = data;
 
   return (
     <>
       <div className="container">
-        <h1>Article</h1>
         <BlogForm
           values={data}
           onChange={handleOnChange}
           onSubmit={submitForm}
           buttonText="Create"
+          header="Create Blog"
         />
       </div>
     </>

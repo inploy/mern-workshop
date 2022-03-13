@@ -1,21 +1,20 @@
 import dayjs from "../../utils/dayjs";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import ReactQuill from "react-quill";
 import request from "../../utils/request";
 import { getUser } from "../../services/authorize";
 import "./style.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-quill/dist/quill.snow.css";
 
-const Card = ({ title, author, content, updatedAt, slug, callback }) => {
+const Card = ({ title, subTitle, updatedAt, slug, callback }) => {
   const navigate = useNavigate();
   const formatDate = dayjs().to(dayjs(updatedAt));
 
   const confirmDelete = async (slug) => {
     try {
       const res = await Swal.fire({
-        title: "Are you sure?",
+        title: "คุณต้องการลบบทความนี้ใช่ไหม?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Ok",
@@ -32,7 +31,7 @@ const Card = ({ title, author, content, updatedAt, slug, callback }) => {
   const deleteBlog = async (slug) => {
     try {
       const res = await request.delete(`/blog/${slug}`);
-      Swal.fire("Deleted!", res.data.message, "success");
+      Swal.fire("แจ้งเตือน", res.data.message, "success");
       callback();
     } catch (err) {
       console.log({ err });
@@ -65,14 +64,7 @@ const Card = ({ title, author, content, updatedAt, slug, callback }) => {
             )}
           </div>
           <div className="card-content">
-            {/* <p className="card-text"> */}
-            <ReactQuill
-              className="card-text"
-              value={content}
-              readOnly={true}
-              theme={"bubble"}
-            />
-            {/* </p> */}
+            <h6 class="text-muted card-text">{subTitle}</h6>
           </div>
           <small className="text-muted">Last updated {formatDate}</small>
         </div>

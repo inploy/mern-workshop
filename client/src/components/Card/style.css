@@ -1,10 +1,10 @@
 .card {
-  height: 200px;
+  height: 190px;
   border: 1px solid #e3e4e6;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
 }
-.card-text {
+ .card-text {
   word-break: break-word;
   overflow: hidden;
   text-overflow: ellipsis;

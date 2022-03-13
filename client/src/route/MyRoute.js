@@ -5,6 +5,7 @@ import EditBlog from "../pages/EditBlog";
 import Blog from "../pages/Blog";
 import Login from "../pages/Login";
 import MainLayout from "../components/MainLayout";
+import NotFound from "../components/NotFound";
 
 import { getUser } from "../services/authorize";
 
@@ -46,7 +47,7 @@ const MyRoute = () => {
             />
             <Route index element={<Home />} />
           </Route>
-          <Route path="*" element={<div>404</div>} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

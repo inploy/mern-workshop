@@ -1,8 +1,9 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "./style.css";
 
 const BlogForm = (props) => {
-  const { values, onChange, onSubmit, buttonText } = props;
+  const { values, onChange, onSubmit, buttonText, header } = props;
 
   const handleInputOnChange = (e) => {
     const { name, value } = e.target;
@@ -18,17 +19,31 @@ const BlogForm = (props) => {
     onSubmit();
   };
 
-  const { title, author, content } = values;
+  const { title, subTitle, author, content } = values;
 
   return (
     <>
+      <h1 className="my-4">{header}</h1>
       <form onSubmit={submitForm}>
         <div className="form-group">
-          <label>ชื่อบทความ</label>
+          <label>
+            <span className="text-danger">*</span>ชื่อบทความ
+          </label>
           <input
             name="title"
             className="form-control"
             value={title}
+            onChange={handleInputOnChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>
+            <span className="text-danger">*</span>คำอธิบายบทความ
+          </label>
+          <input
+            name="subTitle"
+            className="form-control"
+            value={subTitle}
             onChange={handleInputOnChange}
           />
         </div>
@@ -42,7 +57,9 @@ const BlogForm = (props) => {
           />
         </div>
         <div className="form-group">
-          <label>รายละเอียด</label>
+          <label>
+            <span className="text-danger">*</span>รายละเอียด
+          </label>
           <ReactQuill
             theme="snow"
             placeholder="input your content"

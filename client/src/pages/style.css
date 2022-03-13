@@ -1,0 +1,16 @@
+.form-group{
+    margin: 10px 0 10px 0;
+}  
+
+label{
+    margin: 0 0 5px 0;
+}
+.blog-detail .ql-container {
+    border-radius: 0 0 4px 4px;
+    height: auto;
+    margin-bottom:30px;
+  }
+
+  .blog-detail .ql-editor {
+   padding: 10px 0; 
+  }

@@ -1,10 +1,14 @@
-//ชื่อบทความ(title),เนื้อหาบทความ(content) ,ผู้เขียน(author), slug(url)
+//ชื่อบทความ(title), คำอธิบายบทความ(subTitle) ,เนื้อหาบทความ(content) ,ผู้เขียน(author), slug(url)
 
 const mongoose = require("mongoose");
 
 const blogSchema = mongoose.Schema(
   {
     title: {
+      type: String,
+      required: true,
+    },
+    subTitle: {
       type: String,
       required: true,
     },

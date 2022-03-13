@@ -1,0 +1,15 @@
+.form-group{
+    margin: 10px 0 10px 0;
+}  
+
+label{
+    margin: 0 0 5px 0;
+}
+  .ql-toolbar {
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .ql-container {
+    border-radius: 0 0 4px 4px;
+    height: 300px
+  }
